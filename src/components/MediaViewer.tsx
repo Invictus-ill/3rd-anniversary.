@@ -14,7 +14,7 @@ const MediaViewer = ({ onComplete }: MediaViewerProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [viewedCount, setViewedCount] = useState(0);
   const [isAutoplay, setIsAutoplay] = useState(false);
-  const TARGET_VIEWS = 3;
+  const TARGET_VIEWS = 10;
 
   useEffect(() => {
     if (mediaData && mediaData.length > 0) {
