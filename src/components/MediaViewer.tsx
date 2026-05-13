@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, Gift } from 'lucide-react';
+import { RefreshCw, Gift, Play, Pause } from 'lucide-react';
 
 // Use relative import for the JSON config
 import mediaData from '../data/mediaConfig.json';
@@ -13,6 +13,8 @@ const MediaViewer = ({ onComplete }: MediaViewerProps) => {
   const [mediaList, setMediaList] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [viewedCount, setViewedCount] = useState(0);
+  const [isAutoplay, setIsAutoplay] = useState(false);
+  const TARGET_VIEWS = 3;
 
   useEffect(() => {
     if (mediaData && mediaData.length > 0) {
@@ -21,10 +23,30 @@ const MediaViewer = ({ onComplete }: MediaViewerProps) => {
     }
   }, []);
 
+  // Automatic transition when target is reached
+  useEffect(() => {
+    if (viewedCount >= TARGET_VIEWS) {
+      const timer = setTimeout(() => {
+        onComplete();
+      }, 1500); // 1.5s delay to see the last image before transition
+      return () => clearTimeout(timer);
+    }
+  }, [viewedCount, onComplete]);
+
+  // Autoplay effect
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+    if (isAutoplay && mediaList.length > 0 && viewedCount < TARGET_VIEWS) {
+      interval = setInterval(() => {
+        handleNext();
+      }, 5000);
+    }
+    return () => clearInterval(interval);
+  }, [isAutoplay, currentIndex, mediaList, viewedCount]);
+
   const handleNext = () => {
-    if (mediaList.length === 0) return;
+    if (mediaList.length === 0 || viewedCount >= TARGET_VIEWS) return;
     
-    // Pick a random next index that isn't the current one if possible
     let nextIndex = Math.floor(Math.random() * mediaList.length);
     if (mediaList.length > 1 && nextIndex === currentIndex) {
       nextIndex = (nextIndex + 1) % mediaList.length;
@@ -53,56 +75,77 @@ const MediaViewer = ({ onComplete }: MediaViewerProps) => {
     );
   }
 
+  const viewsLeft = Math.max(0, TARGET_VIEWS - viewedCount);
+
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center relative overflow-hidden">
+    <div 
+      className="min-h-screen bg-black flex flex-col items-center justify-center relative overflow-hidden cursor-pointer"
+      onClick={handleNext}
+    >
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
           initial={{ opacity: 0, scale: 1.1 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.8 }}
           className="w-full h-full absolute inset-0 flex items-center justify-center"
         >
           <img 
             src={mediaList[currentIndex]}
             alt="Anniversary memory"
-            className="max-w-full max-h-full object-contain"
+            className="w-full h-full object-contain"
             referrerPolicy="no-referrer"
             loading="lazy"
           />
         </motion.div>
       </AnimatePresence>
 
-      <div className="absolute bottom-10 left-0 right-0 flex flex-col items-center gap-4 z-10 px-6">
-        <div className="flex gap-4">
+      <div className="absolute bottom-10 left-0 right-0 flex flex-col items-center gap-6 z-20 px-6">
+        <div 
+          className="flex items-center gap-4 bg-black/40 backdrop-blur-xl p-2 rounded-full border border-white/10 shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex items-center gap-3 px-5 py-2 bg-white/10 rounded-full border border-white/10">
+            <span className="text-white font-bold text-lg">{viewsLeft}</span>
+            <span className="text-white/60 text-xs font-bold uppercase tracking-widest">Left</span>
+          </div>
+
           <button 
-            onClick={handleNext}
-            className="p-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-white hover:bg-white/40 transition-all active:scale-95"
+            onClick={() => setIsAutoplay(!isAutoplay)}
+            disabled={viewedCount >= TARGET_VIEWS}
+            className={`p-4 rounded-full border transition-all ${viewedCount >= TARGET_VIEWS ? 'opacity-30' : ''} ${isAutoplay ? 'bg-white text-anniversary-love border-white' : 'bg-white/10 text-white border-white/20 hover:bg-white/20'}`}
+            title={isAutoplay ? "Pause Autoplay" : "Start Autoplay"}
           >
-            <RefreshCw className="w-8 h-8" />
+            {isAutoplay ? <Pause className="w-8 h-8 fill-current" /> : <Play className="w-8 h-8 fill-current translate-x-[2px]" />}
           </button>
-          
-          {viewedCount >= 3 && (
-            <motion.button 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              onClick={onComplete}
-              className="px-8 py-4 bg-anniversary-love text-white rounded-full font-bold shadow-xl hover:bg-anniversary-rose transition-all flex items-center gap-2"
-            >
-              See my gifts <Gift className="w-5 h-5" />
-            </motion.button>
-          )}
         </div>
-        
-        <p className="text-white/60 text-sm font-medium">
-          {viewedCount < 3 ? `View ${3 - viewedCount} more to unlock gifts` : "Gifts unlocked!"}
-        </p>
+
+        <motion.p 
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="text-white/80 text-sm font-semibold tracking-widest uppercase drop-shadow-md"
+        >
+          {viewedCount >= TARGET_VIEWS ? "Opening Gifts..." : `Unlocking gifts in ${viewsLeft} more`}
+        </motion.p>
       </div>
 
-      <div className="absolute top-6 left-6 text-white/40 text-sm italic">
-        3 Years of Us
+      <div className="absolute top-6 left-6 flex items-center gap-3">
+        <div className="w-2 h-2 rounded-full bg-anniversary-rose animate-pulse" />
+        <span className="text-white/60 text-sm font-medium tracking-widest uppercase">
+          3 Years of Us
+        </span>
       </div>
+
+      {isAutoplay && viewedCount < TARGET_VIEWS && (
+        <motion.div 
+          initial={{ width: 0 }}
+          animate={{ width: "100%" }}
+          key={currentIndex}
+          transition={{ duration: 5, ease: "linear" }}
+          className="absolute bottom-0 left-0 h-1 bg-anniversary-love z-30"
+        />
+      )}
     </div>
   );
 };
