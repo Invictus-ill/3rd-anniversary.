@@ -18,60 +18,90 @@ const PromiseLetter = ({ onStartOver, onViewMemories }: PromiseLetterProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-anniversary-warm flex flex-col items-center p-8 md:p-12 overflow-y-auto">
+    <div className="min-h-screen bg-anniversary-warm flex flex-col items-center p-4 md:p-12 overflow-y-auto relative">
+      {/* Background Hearts */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-20">
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            initial={{ y: "110vh", x: Math.random() * 100 + "vw", scale: Math.random() * 0.5 + 0.5 }}
+            animate={{ y: "-10vh" }}
+            transition={{ 
+              duration: Math.random() * 10 + 10, 
+              repeat: Infinity, 
+              delay: Math.random() * 20,
+              ease: "linear" 
+            }}
+            className="absolute text-anniversary-love"
+          >
+            <Heart fill="currentColor" size={Math.random() * 24 + 12} />
+          </motion.div>
+        ))}
+      </div>
+
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.2 }}
-        className="max-w-2xl w-full bg-white shadow-2xl rounded-[2rem] p-10 md:p-16 relative mt-10 mb-20"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.5 }}
+        className="max-w-3xl w-full relative group mt-10 mb-20"
       >
-        <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-anniversary-love p-4 rounded-full shadow-lg">
-          <Heart className="w-8 h-8 text-white fill-white" />
-        </div>
+        {/* Shimmering Animated Border */}
+        <div className="absolute -inset-1 bg-gradient-to-r from-anniversary-rose via-white to-anniversary-love rounded-[2.5rem] blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+        <div className="absolute -inset-[2px] bg-gradient-to-r from-anniversary-love via-anniversary-pink to-anniversary-rose rounded-[2.5rem] animate-pulse"></div>
 
-        <h1 className="text-4xl md:text-5xl font-bold text-anniversary-love mb-12 text-center border-b border-anniversary-pink pb-6">
-          A Promise
-        </h1>
+        <div className="relative bg-white shadow-2xl rounded-[2.5rem] p-8 md:p-16 flex flex-col items-center">
+          {/* Heart symbols along the border */}
+          <div className="absolute top-4 left-8 text-anniversary-pink"><Heart size={20} fill="currentColor" /></div>
+          <div className="absolute top-4 right-8 text-anniversary-pink"><Heart size={20} fill="currentColor" /></div>
+          <div className="absolute bottom-4 left-8 text-anniversary-pink"><Heart size={20} fill="currentColor" /></div>
+          <div className="absolute bottom-4 right-8 text-anniversary-pink"><Heart size={20} fill="currentColor" /></div>
 
-        <div className="prose prose-pink max-w-none">
-          {letterContent.split('\n').map((paragraph, idx) => (
-            <p key={idx} className="text-lg md:text-xl text-slate-700 leading-relaxed mb-6 whitespace-pre-wrap">
-              {paragraph}
-            </p>
-          ))}
-        </div>
+          <div className="bg-anniversary-love p-4 rounded-full shadow-lg -mt-16 md:-mt-24 mb-8 border-8 border-anniversary-warm">
+            <Heart className="w-8 h-8 text-white fill-white" />
+          </div>
 
-        <div className="mt-16 flex flex-col items-center gap-6">
-          <div className="flex gap-2">
-            {[1, 2, 3].map(i => (
-              <Heart key={i} className={`w-6 h-6 text-anniversary-love ${i === 2 ? 'fill-anniversary-love scale-125' : 'opacity-40'}`} />
+          <h1 className="text-4xl md:text-6xl font-black text-anniversary-love mb-10 text-center tracking-tight">
+            A Promise
+          </h1>
+
+          <div className="prose prose-pink max-w-none w-full border-t border-b border-anniversary-pink/30 py-10 my-4">
+            {letterContent.split('\n').map((paragraph, idx) => (
+              <p key={idx} className="text-xl md:text-2xl text-slate-700 leading-relaxed mb-8 text-center font-serif italic">
+                {paragraph}
+              </p>
             ))}
           </div>
-          
-          <p className="text-anniversary-rose font-medium italic text-center px-4">
-            Forever & Always
-          </p>
 
-          <div className="flex flex-wrap justify-center gap-4 mt-4 w-full">
-            <button 
-              onClick={onViewMemories}
-              className="px-8 py-4 bg-anniversary-love text-white rounded-full font-bold shadow-xl hover:bg-anniversary-rose transition-all flex items-center gap-2 group"
-            >
-              View All Memories <Play className="w-4 h-4 fill-white group-hover:scale-110 transition-transform" />
-            </button>
+          <div className="mt-12 flex flex-col items-center gap-10 w-full">
+            <div className="flex gap-4 items-center">
+              <Heart className="w-6 h-6 text-anniversary-rose animate-bounce" />
+              <p className="text-2xl font-black text-anniversary-love tracking-widest uppercase italic">
+                Forever & Always
+              </p>
+              <Heart className="w-6 h-6 text-anniversary-rose animate-bounce delay-100" />
+            </div>
 
-            <button 
-              onClick={onStartOver}
-              className="px-8 py-4 bg-red-100 text-red-500 rounded-full font-bold shadow-md hover:bg-red-200 transition-all flex items-center gap-2"
-            >
-              Start Over <RotateCcw className="w-4 h-4" />
-            </button>
+            <div className="flex flex-wrap justify-center gap-6 w-full">
+              <button 
+                onClick={onViewMemories}
+                className="px-10 py-5 bg-anniversary-love text-white rounded-full font-black text-xl shadow-[0_10px_40px_rgba(225,29,72,0.3)] hover:bg-anniversary-rose transition-all flex items-center gap-3 active:scale-95"
+              >
+                View Memories <Play className="w-6 h-6 fill-white" />
+              </button>
+
+              <button 
+                onClick={onStartOver}
+                className="px-10 py-5 bg-red-50 text-red-500 border-2 border-red-100 rounded-full font-black text-xl shadow-lg hover:bg-red-100 transition-all flex items-center gap-3 active:scale-95"
+              >
+                Start Over <RotateCcw className="w-6 h-6" />
+              </button>
+            </div>
           </div>
         </div>
       </motion.div>
 
-      <div className="mb-12 text-anniversary-rose/40 text-xs tracking-widest uppercase">
-        3 Years Together
+      <div className="mb-12 text-anniversary-love/30 text-sm font-bold tracking-[0.3em] uppercase">
+        Three Years of Us • 2026
       </div>
     </div>
   );
