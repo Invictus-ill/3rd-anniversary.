@@ -8,7 +8,7 @@ import MemoriesViewer from './components/MemoriesViewer';
 
 type Stage = 'landing' | 'media' | 'gifts' | 'promise' | 'memories';
 
-const BG_MUSIC_URL = 'https://cdn.pixabay.com/audio/2022/10/26/audio_9c4b6a2f9b.mp3';
+const BG_MUSIC_URL = 'https://cdn.pixabay.com/audio/2022/11/06/audio_039f60f64c.mp3';
 
 function App() {
   const [stage, setStage] = useState<Stage>('landing');

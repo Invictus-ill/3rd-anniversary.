@@ -79,7 +79,7 @@ const MediaViewer = ({ onComplete }: MediaViewerProps) => {
 
   return (
     <div 
-      className="min-h-screen bg-black flex flex-col items-center justify-center relative overflow-hidden cursor-pointer"
+      className="h-dvh bg-black flex flex-col items-center justify-center relative overflow-hidden cursor-pointer"
       onClick={handleNext}
     >
       <AnimatePresence mode="wait">
@@ -143,7 +143,7 @@ const MediaViewer = ({ onComplete }: MediaViewerProps) => {
           animate={{ width: "100%" }}
           key={currentIndex}
           transition={{ duration: 5, ease: "linear" }}
-          className="absolute bottom-0 left-0 h-1 bg-anniversary-love z-30"
+          className="absolute bottom-0 left-0 h-1.5 bg-anniversary-love z-30"
         />
       )}
     </div>

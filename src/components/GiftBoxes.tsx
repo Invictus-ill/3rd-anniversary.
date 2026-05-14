@@ -121,7 +121,7 @@ const GiftBoxes = ({ onComplete, isMuted }: GiftBoxesProps) => {
 
   return (
     <div 
-      className="min-h-screen bg-[#1a0b16] flex flex-col items-center justify-between p-6 overflow-hidden relative cursor-pointer"
+      className="h-dvh bg-[#1a0b16] flex flex-col items-center justify-between p-6 overflow-hidden relative cursor-pointer"
       onClick={handleAction}
     >
       {/* Dynamic Background Sparkles */}

@@ -18,7 +18,7 @@ const PromiseLetter = ({ onStartOver, onViewMemories }: PromiseLetterProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-anniversary-warm flex flex-col items-center p-4 md:p-12 overflow-y-auto relative">
+    <div className="min-h-dvh bg-anniversary-warm flex flex-col items-center p-4 md:p-12 overflow-y-auto relative">
       {/* Background Hearts */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-20">
         {[...Array(20)].map((_, i) => (

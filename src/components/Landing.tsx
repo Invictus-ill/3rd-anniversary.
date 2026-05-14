@@ -8,7 +8,7 @@ interface LandingProps {
 const Landing = ({ onContinue }: LandingProps) => {
   return (
     <div 
-      className="min-h-screen flex flex-col items-center justify-center bg-anniversary-pink p-6 text-center cursor-pointer"
+      className="h-dvh flex flex-col items-center justify-center bg-anniversary-pink p-6 text-center cursor-pointer"
       onClick={onContinue}
     >
       <motion.div
