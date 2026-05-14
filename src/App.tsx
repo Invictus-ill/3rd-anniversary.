@@ -8,15 +8,13 @@ import MemoriesViewer from './components/MemoriesViewer';
 
 type Stage = 'landing' | 'media' | 'gifts' | 'promise' | 'memories';
 
-const BG_MUSIC_URL = 'https://cdn.pixabay.com/audio/2022/11/06/audio_039f60f64c.mp3';
-
 function App() {
   const [stage, setStage] = useState<Stage>('landing');
   const [isMuted, setIsMuted] = useState(false);
   const [hasStartedAudio, setHasStartedAudio] = useState(false);
   
   // Use a persistent Audio object instead of a tag in JSX
-  const bgMusic = useRef<HTMLAudioElement>(new Audio(BG_MUSIC_URL));
+  const bgMusic = useRef<HTMLAudioElement>(new Audio());
 
   useEffect(() => {
     const music = bgMusic.current;
@@ -36,12 +34,21 @@ function App() {
     }
   }, [isMuted]);
 
-  const startAudio = () => {
-    if (bgMusic.current) {
-      bgMusic.current.play()
-        .then(() => setHasStartedAudio(true))
-        .catch(e => console.error("Audio play failed:", e));
+  useEffect(() => {
+    const music = bgMusic.current;
+    if (!hasStartedAudio) return;
+
+    if (stage === 'memories') {
+      music.src = '/media/5.mp3';
+      music.play().catch(e => console.error("Audio play failed:", e));
+    } else {
+      music.pause();
+      music.src = "";
     }
+  }, [stage, hasStartedAudio]);
+
+  const startAudio = () => {
+    setHasStartedAudio(true);
   };
 
   const handleLandingContinue = () => {

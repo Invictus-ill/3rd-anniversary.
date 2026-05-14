@@ -30,10 +30,10 @@ const GIFTS: Gift[] = [
   }
 ];
 
-// SFX URLs
-const CHEST_OPEN_SFX = 'https://www.soundjay.com/misc/sounds/chest-open-1.mp3';
-const CARD_REVEAL_SFX = 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3';
-const SPARKLE_SFX = 'https://www.soundjay.com/magic/sounds/magic-sparkle-1.mp3';
+// SFX URLs removed
+const CHEST_OPEN_SFX = '';
+const CARD_REVEAL_SFX = '';
+const SPARKLE_SFX = '';
 
 interface GiftBoxesProps {
   onComplete: () => void;
