@@ -60,13 +60,13 @@ const PromiseLetter = ({ onStartOver, onViewMemories }: PromiseLetterProps) => {
             <Heart className="w-8 h-8 text-white fill-white" />
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-black text-anniversary-love mb-10 text-center tracking-tight">
+          <h1 className="text-5xl md:text-7xl font-cursive text-anniversary-love mb-10 text-center tracking-tight">
             A Promise
           </h1>
 
           <div className="prose prose-pink max-w-none w-full border-t border-b border-anniversary-pink/30 py-10 my-4">
             {letterContent.split('\n').map((paragraph, idx) => (
-              <p key={idx} className="text-xl md:text-2xl text-slate-700 leading-relaxed mb-8 text-center font-serif italic">
+              <p key={idx} className="text-2xl md:text-3xl text-slate-700 leading-relaxed mb-8 text-center font-serif italic font-medium">
                 {paragraph}
               </p>
             ))}
@@ -75,7 +75,7 @@ const PromiseLetter = ({ onStartOver, onViewMemories }: PromiseLetterProps) => {
           <div className="mt-12 flex flex-col items-center gap-10 w-full">
             <div className="flex gap-4 items-center">
               <Heart className="w-6 h-6 text-anniversary-rose animate-bounce" />
-              <p className="text-2xl font-black text-anniversary-love tracking-widest uppercase italic">
+              <p className="text-3xl font-cursive text-anniversary-love tracking-widest text-center px-4">
                 Forever & Always
               </p>
               <Heart className="w-6 h-6 text-anniversary-rose animate-bounce delay-100" />
@@ -84,14 +84,14 @@ const PromiseLetter = ({ onStartOver, onViewMemories }: PromiseLetterProps) => {
             <div className="flex flex-wrap justify-center gap-6 w-full">
               <button 
                 onClick={onViewMemories}
-                className="px-10 py-5 bg-anniversary-love text-white rounded-full font-black text-xl shadow-[0_10px_40px_rgba(225,29,72,0.3)] hover:bg-anniversary-rose transition-all flex items-center gap-3 active:scale-95"
+                className="px-10 py-5 bg-anniversary-love text-white rounded-full font-serif font-black text-xl shadow-[0_10px_40px_rgba(225,29,72,0.3)] hover:bg-anniversary-rose transition-all flex items-center gap-3 active:scale-95 italic"
               >
                 View Memories <Play className="w-6 h-6 fill-white" />
               </button>
 
               <button 
                 onClick={onStartOver}
-                className="px-10 py-5 bg-red-50 text-red-500 border-2 border-red-100 rounded-full font-black text-xl shadow-lg hover:bg-red-100 transition-all flex items-center gap-3 active:scale-95"
+                className="px-10 py-5 bg-red-100 text-red-500 border-2 border-red-200 rounded-full font-serif font-black text-xl shadow-lg hover:bg-red-200 transition-all flex items-center gap-3 active:scale-95 italic"
               >
                 Start Over <RotateCcw className="w-6 h-6" />
               </button>
@@ -100,7 +100,7 @@ const PromiseLetter = ({ onStartOver, onViewMemories }: PromiseLetterProps) => {
         </div>
       </motion.div>
 
-      <div className="mb-12 text-anniversary-love/30 text-sm font-bold tracking-[0.3em] uppercase">
+      <div className="mb-12 text-anniversary-love/30 text-sm font-black tracking-[0.4em] uppercase font-serif italic">
         Three Years of Us • 2026
       </div>
     </div>

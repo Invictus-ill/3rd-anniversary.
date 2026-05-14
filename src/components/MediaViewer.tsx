@@ -59,8 +59,8 @@ const MediaViewer = ({ onComplete }: MediaViewerProps) => {
   if (mediaList.length === 0) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-anniversary-warm p-6 text-center">
-        <div className="max-w-md space-y-6">
-          <p className="text-xl text-slate-600">
+        <div className="max-w-md space-y-6 font-serif">
+          <p className="text-2xl text-slate-600 italic">
             No memories loaded! <br/>
             Run <code>npm run refresh-media</code> to fetch links from Google Photos.
           </p>
@@ -107,8 +107,8 @@ const MediaViewer = ({ onComplete }: MediaViewerProps) => {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center gap-3 px-5 py-2 bg-white/10 rounded-full border border-white/10">
-            <span className="text-white font-bold text-lg">{viewsLeft}</span>
-            <span className="text-white/60 text-xs font-bold uppercase tracking-widest">Left</span>
+            <span className="text-white font-serif font-black text-xl">{viewsLeft}</span>
+            <span className="text-white/60 text-[10px] font-black uppercase tracking-[0.2em]">Left</span>
           </div>
 
           <button 
@@ -124,15 +124,15 @@ const MediaViewer = ({ onComplete }: MediaViewerProps) => {
         <motion.p 
           animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="text-white/80 text-sm font-semibold tracking-widest uppercase drop-shadow-md"
+          className="text-white/80 text-xs md:text-sm font-black tracking-[0.3em] uppercase drop-shadow-md font-serif italic"
         >
-          {viewedCount >= TARGET_VIEWS ? "Opening Gifts..." : `Unlocking gifts in ${viewsLeft} more`}
+          {viewedCount >= TARGET_VIEWS ? "Something Special Awaits..." : `Unlocking gifts in ${viewsLeft} more`}
         </motion.p>
       </div>
 
       <div className="absolute top-6 left-6 flex items-center gap-3">
         <div className="w-2 h-2 rounded-full bg-anniversary-rose animate-pulse" />
-        <span className="text-white/60 text-sm font-medium tracking-widest uppercase">
+        <span className="text-white/60 text-[10px] md:text-xs font-black tracking-[0.4em] uppercase font-serif italic">
           3 Years of Us
         </span>
       </div>

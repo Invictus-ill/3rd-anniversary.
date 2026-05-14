@@ -47,7 +47,6 @@ const MemoriesViewer = ({ onBack, onHome }: MemoriesViewerProps) => {
 
   const handleNext = () => {
     if (mediaList.length === 0) return;
-    // Don't advance if we are at the end and about to transition
     if (photosLeft === 0) return;
 
     const nextIndex = (currentIndex + 1) % mediaList.length;
@@ -81,16 +80,16 @@ const MemoriesViewer = ({ onBack, onHome }: MemoriesViewerProps) => {
       <div className="absolute top-6 left-6 z-50" onClick={(e) => e.stopPropagation()}>
         <button 
           onClick={onBack}
-          className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full hover:bg-white/20 transition-all shadow-lg"
+          className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full hover:bg-white/20 transition-all shadow-lg font-serif italic text-sm"
         >
-          <ChevronLeft className="w-5 h-5" /> Back to Promise
+          <ChevronLeft className="w-4 h-4" /> Back to Promise
         </button>
       </div>
 
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 bg-black/40 backdrop-blur-xl p-2 rounded-full border border-white/10 shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-3 px-5 py-2 bg-white/10 rounded-full border border-white/10">
-          <span className="text-white font-bold text-lg">{photosLeft}</span>
-          <span className="text-white/60 text-xs font-bold uppercase tracking-widest">Left</span>
+          <span className="text-white font-serif font-black text-xl">{photosLeft}</span>
+          <span className="text-white/60 text-[10px] font-black uppercase tracking-widest">Left</span>
         </div>
 
         <button 
@@ -102,9 +101,9 @@ const MemoriesViewer = ({ onBack, onHome }: MemoriesViewerProps) => {
       </div>
 
       <div className="absolute top-6 right-6 z-50">
-        <div className="px-4 py-2 bg-black/20 backdrop-blur-md rounded-full border border-white/10 text-white/40 text-xs font-bold tracking-widest uppercase text-center">
-          {currentIndex + 1} / {totalPhotos}
-          {photosLeft === 0 && <div className="text-[10px] text-anniversary-rose mt-1 animate-pulse">Restarting...</div>}
+        <div className="px-5 py-2 bg-black/40 backdrop-blur-md rounded-full border border-white/10 text-white/60 text-xs font-black tracking-[0.2em] uppercase text-center font-serif">
+          <span className="text-white">{currentIndex + 1}</span> / {totalPhotos}
+          {photosLeft === 0 && <div className="text-[10px] text-anniversary-rose mt-1 animate-pulse italic">Restarting...</div>}
         </div>
       </div>
 

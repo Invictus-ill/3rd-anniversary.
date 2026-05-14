@@ -33,15 +33,15 @@ const Landing = ({ onContinue }: LandingProps) => {
           </motion.div>
         </div>
 
-        <h1 className="text-5xl md:text-7xl font-bold text-anniversary-love tracking-tight">
+        <h1 className="text-6xl md:text-8xl font-serif font-black text-anniversary-love tracking-tighter">
           Happy 3rd Anniversary<br />
-          <span className="text-4xl md:text-6xl font-light mt-4 block">My Love</span>
+          <span className="text-5xl md:text-7xl font-cursive mt-6 block text-anniversary-rose">My Love</span>
         </h1>
 
         <motion.div
           animate={{ opacity: [0.4, 1, 0.4] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="text-xl md:text-2xl text-anniversary-rose font-medium"
+          className="text-2xl md:text-3xl font-serif italic text-anniversary-love/60 font-medium"
         >
           Tap to continue
         </motion.div>

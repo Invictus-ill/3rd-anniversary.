@@ -90,7 +90,7 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
           className="space-y-6"
         >
           <Heart className="w-20 h-20 text-anniversary-love fill-anniversary-love mx-auto" />
-          <h2 className="text-3xl font-bold text-anniversary-love tracking-widest uppercase px-6">
+          <h2 className="text-4xl font-serif font-bold text-anniversary-love tracking-wide uppercase px-6 italic">
             Something Special Awaits...
           </h2>
         </motion.div>
@@ -135,11 +135,11 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
         className="text-center pt-8 z-10"
         animate={{ y: isAllRevealed ? 0 : -20 }}
       >
-        <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter drop-shadow-lg">
-          {isAllRevealed ? "Your Rewards" : `Tap to Reveal (${GIFTS.length - revealedCount} remaining)`}
+        <h2 className="text-3xl md:text-5xl font-cursive text-white drop-shadow-lg">
+          {isAllRevealed ? "Your Rewards" : "Tap anywhere to reveal"}
         </h2>
         {revealedCount === 0 && (
-          <p className="text-anniversary-rose font-bold animate-pulse mt-2 italic">Behold!</p>
+          <p className="text-anniversary-rose font-serif italic font-bold animate-pulse mt-2">Behold!</p>
         )}
       </motion.div>
 
@@ -148,7 +148,6 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
         <div className="flex flex-wrap justify-center gap-4 md:gap-8 max-w-6xl w-full px-4">
           {GIFTS.map((gift, index) => {
             const isShown = revealedCount > index;
-            const isCurrentlyRevealing = revealedCount === index + 1;
             
             return (
               <AnimatePresence key={gift.id}>
@@ -172,7 +171,7 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
                       damping: 15, 
                       stiffness: 150 
                     }}
-                    className={`w-full md:w-72 aspect-[3/4] max-w-[280px] bg-white rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(225,29,72,0.4)] border-4 ${isCurrentlyRevealing ? 'border-yellow-400 ring-4 ring-yellow-400' : 'border-white'}`}
+                    className={`w-full md:w-72 aspect-[3/4] max-w-[280px] bg-white rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(225,29,72,0.4)] border-4 border-white`}
                   >
                     <div className="h-full flex flex-col">
                       <div className="relative h-1/2 bg-anniversary-pink flex items-center justify-center overflow-hidden">
@@ -184,29 +183,21 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                         <div className="absolute bottom-2 left-4 right-4 text-left">
-                          <p className="text-white font-black text-lg leading-tight uppercase italic">{gift.title}</p>
+                          <p className="text-white font-serif font-black text-xl leading-tight uppercase italic">{gift.title}</p>
                         </div>
                       </div>
                       <div className="flex-1 p-5 flex flex-col justify-between bg-white text-slate-800">
-                        <p className="text-sm md:text-base font-bold leading-relaxed italic text-slate-600 text-left">
+                        <p className="text-base md:text-lg font-serif italic leading-relaxed text-slate-600 text-left">
                           "{gift.description}"
                         </p>
                         <div className="flex items-center justify-between mt-4">
-                          <div className="bg-anniversary-love/10 text-anniversary-love px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border border-anniversary-love/20">
+                          <div className="bg-anniversary-love/10 text-anniversary-love px-3 py-1 rounded-full text-xs font-serif font-black uppercase tracking-widest border border-anniversary-love/20">
                             Rare Gift
                           </div>
                           <Heart className="w-5 h-5 text-anniversary-love fill-anniversary-love" />
                         </div>
                       </div>
                     </div>
-                    {isCurrentlyRevealing && (
-                      <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: [0, 1, 0] }}
-                        transition={{ duration: 1, repeat: 2 }}
-                        className="absolute inset-0 bg-white z-50 pointer-events-none"
-                      />
-                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -262,16 +253,6 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
               <div className="absolute left-6 top-0 bottom-0 w-3 bg-yellow-500 shadow-sm z-20"></div>
               <div className="absolute right-6 top-0 bottom-0 w-3 bg-yellow-500 shadow-sm z-20"></div>
             </div>
-            
-            {/* Tap indicator - Moved to the right */}
-            <motion.div 
-              animate={{ y: [0, 10, 0], opacity: [0.3, 1, 0.3] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="absolute -top-10 -right-12 text-yellow-400 flex flex-col items-center"
-            >
-              <div className="w-1 h-4 bg-yellow-400 rounded-full mb-1"></div>
-              <p className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">Tap Chest</p>
-            </motion.div>
           </motion.div>
         ) : (
           <motion.button
@@ -281,7 +262,7 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
               e.stopPropagation();
               onComplete();
             }}
-            className="px-12 py-5 bg-white text-anniversary-love border-4 border-anniversary-love rounded-full font-black text-xl shadow-2xl hover:bg-anniversary-pink transition-all flex items-center gap-3 group active:scale-95"
+            className="px-12 py-5 bg-white text-anniversary-love border-4 border-anniversary-love rounded-full font-serif font-black text-xl shadow-2xl hover:bg-anniversary-pink transition-all flex items-center gap-3 group active:scale-95 italic"
           >
             A Message for You <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
           </motion.button>
