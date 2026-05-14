@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Sparkles, Gift as GiftIcon } from 'lucide-react';
+import { Heart, Sparkles, Gift as GiftIcon, ArrowRight } from 'lucide-react';
 
 interface Gift {
   id: number;
@@ -13,7 +13,7 @@ const GIFTS: Gift[] = [
   {
     id: 1,
     title: "A Shopping Spree",
-    description: "₹3,000 to spend on whatever makes you feel beautiful at Bath & Body Works.",
+    description: "₹3,000 for whatever makes you feel beautiful at Bath & Body Works.",
     image: "/images/gift1.jpg"
   },
   {
@@ -36,23 +36,22 @@ interface GiftBoxesProps {
 
 const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
   const [chestState, setChestState] = useState<'closed' | 'shaking' | 'open'>('closed');
-  const [revealedGiftIndex, setRevealedGiftIndex] = useState(-1);
-  const [selectedGift, setSelectedGift] = useState<Gift | null>(null);
+  const [revealedCount, setRevealedCount] = useState(0);
   const [showTransition, setShowTransition] = useState(true);
 
   useEffect(() => {
-    // Initial romantic transition
     const timer = setTimeout(() => setShowTransition(false), 2500);
     return () => clearTimeout(timer);
   }, []);
 
-  const handleChestClick = () => {
+  const handleAction = () => {
     if (chestState === 'closed') {
       setChestState('shaking');
-      // Shake for a bit then open
-      setTimeout(() => setChestState('open'), 800);
-    } else if (chestState === 'open' && revealedGiftIndex < GIFTS.length - 1) {
-      setRevealedGiftIndex(prev => prev + 1);
+      setTimeout(() => {
+        setChestState('open');
+      }, 600);
+    } else if (chestState === 'open' && revealedCount < GIFTS.length) {
+      setRevealedCount(prev => prev + 1);
     }
   };
 
@@ -69,7 +68,7 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
           className="space-y-6"
         >
           <Heart className="w-20 h-20 text-anniversary-love fill-anniversary-love mx-auto" />
-          <h2 className="text-3xl font-bold text-anniversary-love tracking-widest uppercase">
+          <h2 className="text-3xl font-bold text-anniversary-love tracking-widest uppercase px-6">
             Something Special Awaits...
           </h2>
         </motion.div>
@@ -77,214 +76,195 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
     );
   }
 
+  const isAllRevealed = revealedCount === GIFTS.length;
+
   return (
-    <div className="min-h-screen bg-anniversary-pink flex flex-col items-center justify-center p-6 overflow-hidden relative">
-      <AnimatePresence>
-        {chestState !== 'open' && (
+    <div 
+      className="min-h-screen bg-[#1a0b16] flex flex-col items-center justify-between p-6 overflow-hidden relative cursor-pointer"
+      onClick={handleAction}
+    >
+      {/* Dynamic Background Sparkles */}
+      <div className="absolute inset-0 pointer-events-none opacity-30">
+        {[...Array(15)].map((_, i) => (
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.5, y: -100 }}
-            className="text-center space-y-12"
+            key={i}
+            className="absolute text-anniversary-rose"
+            style={{ 
+              top: Math.random() * 100 + '%', 
+              left: Math.random() * 100 + '%' 
+            }}
+            animate={{ 
+              scale: [0, 1, 0],
+              opacity: [0, 1, 0]
+            }}
+            transition={{ 
+              duration: 2 + Math.random() * 2, 
+              repeat: Infinity,
+              delay: Math.random() * 5
+            }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-anniversary-love drop-shadow-sm">
-              Tap to open your Anniversary Chest
-            </h2>
+            <Sparkles size={16} />
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Header */}
+      <motion.div 
+        className="text-center pt-8 z-10"
+        animate={{ y: isAllRevealed ? 0 : -20 }}
+      >
+        <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter drop-shadow-lg">
+          {isAllRevealed ? "Your Rewards" : `Tap to Reveal (${GIFTS.length - revealedCount} remaining)`}
+        </h2>
+        {revealedCount === 0 && (
+          <p className="text-anniversary-rose font-bold animate-pulse mt-2">Open the Chest!</p>
+        )}
+      </motion.div>
+
+      {/* Main Stage (Cards) */}
+      <div className="flex-1 w-full flex items-center justify-center relative">
+        <div className="flex flex-wrap justify-center gap-4 md:gap-8 max-w-6xl w-full px-4">
+          {GIFTS.map((gift, index) => {
+            const isShown = revealedCount > index;
+            const isCurrentlyRevealing = revealedCount === index + 1;
             
-            <motion.div
-              className="relative cursor-pointer"
-              onClick={handleChestClick}
-              animate={chestState === 'shaking' ? {
-                rotate: [-2, 2, -2, 2, 0],
-                x: [-5, 5, -5, 5, 0],
-              } : {
-                y: [0, -10, 0]
-              }}
-              transition={chestState === 'shaking' ? {
-                duration: 0.2,
-                repeat: 4
-              } : {
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              whileHover={{ scale: 1.05 }}
-            >
-              {/* Skeuomorphic Chest */}
-              <div className="w-64 h-48 bg-anniversary-love rounded-2xl relative shadow-[0_20px_50px_rgba(225,29,72,0.4)] border-b-8 border-rose-900 group">
-                <div className="absolute top-0 left-0 w-full h-1/2 bg-anniversary-rose rounded-t-2xl border-b-4 border-rose-900 flex items-center justify-center">
-                  <div className="w-12 h-12 bg-yellow-400 rounded-full shadow-inner border-4 border-yellow-600 flex items-center justify-center">
-                    <div className="w-2 h-4 bg-yellow-700 rounded-full"></div>
-                  </div>
-                </div>
-                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-4 bg-yellow-500/30"></div>
-                {/* Golden bands */}
-                <div className="absolute left-8 top-0 bottom-0 w-4 bg-yellow-500 shadow-md"></div>
-                <div className="absolute right-8 top-0 bottom-0 w-4 bg-yellow-500 shadow-md"></div>
-                
-                <motion.div 
-                  animate={{ opacity: [0, 1, 0] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute -inset-4 bg-white/20 blur-2xl rounded-full -z-10"
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {chestState === 'open' && (
-        <div className="w-full max-w-5xl flex flex-col items-center">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl font-bold text-anniversary-love mb-2">Your Gifts</h2>
-            <p className="text-anniversary-rose font-medium">Tap each one to see the details</p>
-          </motion.div>
-
-          <div className="flex flex-wrap justify-center gap-8 md:gap-12 w-full perspective-1000">
-            {GIFTS.map((gift, index) => {
-              const isRevealed = revealedGiftIndex >= index;
-              return (
-                <AnimatePresence key={gift.id}>
-                  {isRevealed && (
-                    <motion.div
-                      initial={{ 
-                        opacity: 0, 
-                        scale: 0, 
-                        y: 100,
-                        rotateY: 180 
-                      }}
-                      animate={{ 
-                        opacity: 1, 
-                        scale: 1, 
-                        y: 0,
-                        rotateY: 0
-                      }}
-                      transition={{ 
-                        type: "spring", 
-                        damping: 12, 
-                        stiffness: 100,
-                        delay: 0.1 
-                      }}
-                      className="w-64 h-80 group cursor-pointer"
-                      onClick={() => setSelectedGift(gift)}
-                    >
-                      {/* Big Pop Effect on Entry */}
-                      <motion.div 
-                        initial={{ scale: 2, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ duration: 0.3 }}
-                        className="absolute -inset-4 bg-white/30 blur-2xl rounded-full -z-10"
-                      />
-                      
-                      <div className="w-full h-full bg-white rounded-3xl p-4 shadow-2xl border-4 border-anniversary-pink relative overflow-hidden flex flex-col items-center text-center hover:border-anniversary-love transition-colors">
-                        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-anniversary-rose to-anniversary-love" />
-                        
-                        <div className="w-full h-40 rounded-2xl overflow-hidden mb-4 shadow-inner">
-                          <img 
-                            src={gift.image} 
-                            alt={gift.title} 
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                            referrerPolicy="no-referrer"
-                          />
+            return (
+              <AnimatePresence key={gift.id}>
+                {isShown && (
+                  <motion.div
+                    layout
+                    initial={{ 
+                      opacity: 0, 
+                      scale: 0.5, 
+                      y: 300,
+                      rotateY: 180
+                    }}
+                    animate={{ 
+                      opacity: 1, 
+                      scale: 1, 
+                      y: 0,
+                      rotateY: 0
+                    }}
+                    transition={{ 
+                      type: "spring", 
+                      damping: 15, 
+                      stiffness: 150 
+                    }}
+                    className={`w-full md:w-72 aspect-[3/4] max-w-[280px] bg-white rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(225,29,72,0.4)] border-4 ${isCurrentlyRevealing ? 'border-yellow-400 ring-4 ring-yellow-400' : 'border-white'}`}
+                  >
+                    <div className="h-full flex flex-col">
+                      <div className="relative h-1/2 bg-anniversary-pink flex items-center justify-center overflow-hidden">
+                        <img 
+                          src={gift.image} 
+                          alt={gift.title} 
+                          className="w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <div className="absolute bottom-2 left-4 right-4">
+                          <p className="text-white font-black text-lg leading-tight uppercase italic">{gift.title}</p>
                         </div>
-                        
-                        <h3 className="font-bold text-anniversary-love text-lg mb-1">{gift.title}</h3>
-                        <div className="p-2 bg-anniversary-pink rounded-full">
-                          <GiftIcon className="w-5 h-5 text-anniversary-love" />
-                        </div>
-                        
-                        <motion.div
-                          animate={{ y: [0, -5, 0] }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                          className="mt-2"
-                        >
-                          <Sparkles className="w-4 h-4 text-yellow-500" />
-                        </motion.div>
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              );
-            })}
-          </div>
-
-          {revealedGiftIndex < GIFTS.length - 1 && (
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={handleChestClick}
-              className="mt-16 px-12 py-5 bg-anniversary-love text-white rounded-full font-black text-xl shadow-[0_10px_30px_rgba(225,29,72,0.4)] hover:bg-anniversary-rose transition-all uppercase tracking-widest"
-            >
-              Reveal Next Gift!
-            </motion.button>
-          )}
-
-          {revealedGiftIndex === GIFTS.length - 1 && (
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              onClick={onComplete}
-              className="mt-16 px-12 py-5 bg-white text-anniversary-love border-4 border-anniversary-love rounded-full font-black text-xl shadow-2xl hover:bg-anniversary-pink transition-all flex items-center gap-3"
-            >
-              The Final Secret <Heart className="w-6 h-6 fill-anniversary-love" />
-            </motion.button>
-          )}
+                      <div className="flex-1 p-5 flex flex-col justify-between bg-white text-slate-800">
+                        <p className="text-sm md:text-base font-bold leading-relaxed italic text-slate-600">
+                          "{gift.description}"
+                        </p>
+                        <div className="flex items-center justify-between mt-4">
+                          <div className="bg-anniversary-love/10 text-anniversary-love px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border border-anniversary-love/20">
+                            Rare Gift
+                          </div>
+                          <Heart className="w-5 h-5 text-anniversary-love fill-anniversary-love" />
+                        </div>
+                      </div>
+                    </div>
+                    {isCurrentlyRevealing && (
+                      <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: [0, 1, 0] }}
+                        transition={{ duration: 1, repeat: 2 }}
+                        className="absolute inset-0 bg-white z-50 pointer-events-none"
+                      />
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            );
+          })}
         </div>
-      )}
+      </div>
 
-      <AnimatePresence>
-        {selectedGift && (
+      {/* Footer (Chest) */}
+      <div className="pb-12 md:pb-20 relative w-full flex flex-col items-center">
+        {!isAllRevealed ? (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-md"
-            onClick={() => setSelectedGift(null)}
+            className="relative"
+            animate={chestState === 'shaking' ? {
+              rotate: [-2, 2, -2, 2, 0],
+              x: [-10, 10, -10, 10, 0],
+              scale: [1, 1.2, 1]
+            } : {
+              y: [0, -8, 0]
+            }}
+            transition={chestState === 'shaking' ? {
+              duration: 0.15,
+              repeat: 4
+            } : {
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
           >
-            <motion.div 
-              initial={{ scale: 0.5, rotateX: 45 }}
-              animate={{ scale: 1, rotateX: 0 }}
-              exit={{ scale: 0.5, opacity: 0 }}
-              className="bg-white rounded-[2.5rem] p-8 md:p-12 max-w-lg w-full shadow-[0_0_100px_rgba(255,255,255,0.2)] relative text-center"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button 
-                onClick={() => setSelectedGift(null)}
-                className="absolute top-6 right-6 text-slate-400 hover:text-anniversary-love transition-colors"
+            {/* Skeuomorphic Chest at Bottom */}
+            <div className={`w-48 h-36 ${chestState === 'open' ? 'bg-rose-950' : 'bg-anniversary-love'} rounded-2xl relative shadow-[0_-10px_50px_rgba(225,29,72,0.5)] border-b-8 border-rose-900 overflow-visible`}>
+              {/* Lid */}
+              <motion.div 
+                className={`absolute top-0 left-0 w-full h-1/2 bg-anniversary-rose rounded-t-2xl border-b-4 border-rose-900 flex items-center justify-center z-10 origin-bottom`}
+                animate={{ rotateX: chestState === 'open' ? -110 : 0 }}
+                transition={{ type: "spring", stiffness: 200, damping: 20 }}
               >
-                <Sparkles className="w-8 h-8" />
-              </button>
-
-              <div className="mb-8 rounded-3xl overflow-hidden shadow-2xl border-4 border-anniversary-pink ring-8 ring-anniversary-warm">
-                <img 
-                  src={selectedGift.image} 
-                  alt={selectedGift.title} 
-                  className="w-full h-64 object-cover"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-
-              <h3 className="text-3xl font-black text-anniversary-love mb-4 flex items-center justify-center gap-3">
-                <GiftIcon className="w-8 h-8" /> {selectedGift.title}
-              </h3>
+                <div className="w-10 h-10 bg-yellow-400 rounded-full shadow-inner border-4 border-yellow-600 flex items-center justify-center">
+                  <div className="w-2 h-4 bg-yellow-700 rounded-full"></div>
+                </div>
+              </motion.div>
               
-              <p className="text-slate-600 text-xl leading-relaxed mb-10 italic">
-                "{selectedGift.description}"
-              </p>
+              {/* Inner light when open */}
+              {chestState === 'open' && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="absolute -top-12 left-1/2 -translate-x-1/2 w-32 h-32 bg-yellow-400/50 blur-3xl rounded-full z-0"
+                />
+              )}
 
-              <button 
-                onClick={() => setSelectedGift(null)}
-                className="w-full py-5 bg-anniversary-love text-white font-black text-xl rounded-2xl hover:bg-anniversary-rose transition-all shadow-xl"
-              >
-                Got it!
-              </button>
+              {/* Decorative elements */}
+              <div className="absolute left-6 top-0 bottom-0 w-3 bg-yellow-500 shadow-sm z-20"></div>
+              <div className="absolute right-6 top-0 bottom-0 w-3 bg-yellow-500 shadow-sm z-20"></div>
+            </div>
+            
+            {/* Tap indicator */}
+            <motion.div 
+              animate={{ y: [0, 10, 0], opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="absolute -top-10 left-1/2 -translate-x-1/2 text-yellow-400 flex flex-col items-center"
+            >
+              <div className="w-1 h-4 bg-yellow-400 rounded-full mb-1"></div>
+              <p className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">Tap Chest</p>
             </motion.div>
           </motion.div>
+        ) : (
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onComplete();
+            }}
+            className="px-12 py-5 bg-white text-anniversary-love border-4 border-anniversary-love rounded-full font-black text-xl shadow-2xl hover:bg-anniversary-pink transition-all flex items-center gap-3 group active:scale-95"
+          >
+            A Message for You <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+          </motion.button>
         )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 };
