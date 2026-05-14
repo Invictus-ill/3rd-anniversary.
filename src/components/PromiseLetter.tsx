@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Play, RotateCcw } from 'lucide-react';
 
@@ -11,6 +11,18 @@ const PromiseLetter = ({ onStartOver, onViewMemories }: PromiseLetterProps) => {
   const [fullText, setFullText] = useState<string>('');
   const [displayedText, setDisplayedText] = useState<string>('');
   const [isTypingComplete, setIsTypingComplete] = useState(false);
+
+  // Memoize heart properties to prevent glitching on re-renders
+  const backgroundHearts = useMemo(() => {
+    return [...Array(20)].map((_, i) => ({
+      id: i,
+      left: Math.random() * 100 + "vw",
+      scale: Math.random() * 0.5 + 0.5,
+      duration: Math.random() * 10 + 15,
+      delay: Math.random() * 20,
+      size: Math.random() * 24 + 12
+    }));
+  }, []);
 
   useEffect(() => {
     fetch('/data/letter.txt')
@@ -40,20 +52,20 @@ const PromiseLetter = ({ onStartOver, onViewMemories }: PromiseLetterProps) => {
     <div className="min-h-dvh bg-anniversary-warm flex flex-col items-center p-4 md:p-12 overflow-y-auto relative">
       {/* Background Hearts */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-20">
-        {[...Array(20)].map((_, i) => (
+        {backgroundHearts.map((heart) => (
           <motion.div
-            key={i}
-            initial={{ y: "110vh", x: Math.random() * 100 + "vw", scale: Math.random() * 0.5 + 0.5 }}
+            key={heart.id}
+            initial={{ y: "110vh", x: heart.left, scale: heart.scale }}
             animate={{ y: "-10vh" }}
             transition={{ 
-              duration: Math.random() * 10 + 10, 
+              duration: heart.duration, 
               repeat: Infinity, 
-              delay: Math.random() * 20,
+              delay: heart.delay,
               ease: "linear" 
             }}
             className="absolute text-anniversary-love"
           >
-            <Heart fill="currentColor" size={Math.random() * 24 + 12} />
+            <Heart fill="currentColor" size={heart.size} />
           </motion.div>
         ))}
       </div>
