@@ -14,18 +14,33 @@ function App() {
   const [stage, setStage] = useState<Stage>('landing');
   const [isMuted, setIsMuted] = useState(false);
   const [hasStartedAudio, setHasStartedAudio] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  
+  // Use a persistent Audio object instead of a tag in JSX
+  const bgMusic = useRef<HTMLAudioElement>(new Audio(BG_MUSIC_URL));
 
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.muted = isMuted;
+    const music = bgMusic.current;
+    music.loop = true;
+    music.volume = 0.5;
+    
+    // Safety cleanup
+    return () => {
+      music.pause();
+      music.src = "";
+    };
+  }, []);
+
+  useEffect(() => {
+    if (bgMusic.current) {
+      bgMusic.current.muted = isMuted;
     }
   }, [isMuted]);
 
   const startAudio = () => {
-    if (!hasStartedAudio && audioRef.current) {
-      audioRef.current.play().catch(e => console.error("Audio play failed:", e));
-      setHasStartedAudio(true);
+    if (bgMusic.current) {
+      bgMusic.current.play()
+        .then(() => setHasStartedAudio(true))
+        .catch(e => console.error("Audio play failed:", e));
     }
   };
 
@@ -34,23 +49,20 @@ function App() {
     setStage('media');
   };
 
+  const handleStartOver = () => {
+    setStage('landing');
+  };
+
   return (
     <main className="font-sans relative">
-      {/* Background Music */}
-      <audio 
-        ref={audioRef}
-        src={BG_MUSIC_URL}
-        loop
-      />
-
       {/* Global Volume Toggle */}
       {hasStartedAudio && (
         <button 
           onClick={() => setIsMuted(!isMuted)}
-          className="fixed top-6 right-6 z-[200] p-3 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-white hover:bg-white/40 transition-all shadow-lg"
+          className="fixed top-6 right-6 z-[200] p-3 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-white hover:bg-white/40 transition-all shadow-lg active:scale-95"
           title={isMuted ? "Unmute" : "Mute"}
         >
-          {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+          {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
         </button>
       )}
 
@@ -68,7 +80,7 @@ function App() {
       
       {stage === 'promise' && (
         <PromiseLetter 
-          onStartOver={() => setStage('landing')} 
+          onStartOver={handleStartOver} 
           onViewMemories={() => setStage('memories')}
         />
       )}
@@ -76,7 +88,7 @@ function App() {
       {stage === 'memories' && (
         <MemoriesViewer 
           onBack={() => setStage('promise')} 
-          onHome={() => setStage('landing')}
+          onHome={handleStartOver}
         />
       )}
     </main>
