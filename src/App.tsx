@@ -38,10 +38,23 @@ function App() {
     const music = bgMusic.current;
     if (!hasStartedAudio) return;
 
-    if (stage === 'memories') {
-      music.src = '/media/5.mp3';
+    let targetSrc = "";
+
+    // Determine the audio source based on the stage
+    if (stage === 'media') {
+      targetSrc = '/media/birds.mp3';
+    } else if (stage === 'promise') {
+      targetSrc = '/media/piano.mp3';
+    } else if (stage === 'memories') {
+      targetSrc = '/media/5.mp3';
+    }
+
+    // Only update and play if the source actually changes
+    const currentPath = music.src ? new URL(music.src).pathname : "";
+    if (targetSrc && currentPath !== targetSrc) {
+      music.src = targetSrc;
       music.play().catch(e => console.error("Audio play failed:", e));
-    } else {
+    } else if (!targetSrc) {
       music.pause();
       music.src = "";
     }
