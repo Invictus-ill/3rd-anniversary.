@@ -32,7 +32,10 @@ function App() {
       )}
 
       {stage === 'memories' && (
-        <MemoriesViewer onBack={() => setStage('promise')} />
+        <MemoriesViewer 
+          onBack={() => setStage('promise')} 
+          onHome={() => setStage('landing')}
+        />
       )}
     </main>
   );

@@ -40,9 +40,31 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
   const [showTransition, setShowTransition] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowTransition(false), 2500);
+    const timer = setTimeout(() => {
+      setShowTransition(false);
+    }, 2500);
     return () => clearTimeout(timer);
   }, []);
+
+  // Auto-open effect
+  useEffect(() => {
+    if (!showTransition && chestState === 'closed') {
+      const timer = setTimeout(() => {
+        handleAction(); // Shake and Open
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [showTransition, chestState]);
+
+  // Auto-reveal first gift effect
+  useEffect(() => {
+    if (chestState === 'open' && revealedCount === 0) {
+      const timer = setTimeout(() => {
+        setRevealedCount(1);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [chestState, revealedCount]);
 
   const handleAction = () => {
     if (chestState === 'closed') {
@@ -117,7 +139,7 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
           {isAllRevealed ? "Your Rewards" : `Tap to Reveal (${GIFTS.length - revealedCount} remaining)`}
         </h2>
         {revealedCount === 0 && (
-          <p className="text-anniversary-rose font-bold animate-pulse mt-2">Open the Chest!</p>
+          <p className="text-anniversary-rose font-bold animate-pulse mt-2 italic">Behold!</p>
         )}
       </motion.div>
 
@@ -161,12 +183,12 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
                           referrerPolicy="no-referrer"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                        <div className="absolute bottom-2 left-4 right-4">
+                        <div className="absolute bottom-2 left-4 right-4 text-left">
                           <p className="text-white font-black text-lg leading-tight uppercase italic">{gift.title}</p>
                         </div>
                       </div>
                       <div className="flex-1 p-5 flex flex-col justify-between bg-white text-slate-800">
-                        <p className="text-sm md:text-base font-bold leading-relaxed italic text-slate-600">
+                        <p className="text-sm md:text-base font-bold leading-relaxed italic text-slate-600 text-left">
                           "{gift.description}"
                         </p>
                         <div className="flex items-center justify-between mt-4">
@@ -241,11 +263,11 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
               <div className="absolute right-6 top-0 bottom-0 w-3 bg-yellow-500 shadow-sm z-20"></div>
             </div>
             
-            {/* Tap indicator */}
+            {/* Tap indicator - Moved to the right */}
             <motion.div 
               animate={{ y: [0, 10, 0], opacity: [0.3, 1, 0.3] }}
               transition={{ duration: 1.5, repeat: Infinity }}
-              className="absolute -top-10 left-1/2 -translate-x-1/2 text-yellow-400 flex flex-col items-center"
+              className="absolute -top-10 -right-12 text-yellow-400 flex flex-col items-center"
             >
               <div className="w-1 h-4 bg-yellow-400 rounded-full mb-1"></div>
               <p className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">Tap Chest</p>
