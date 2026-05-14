@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, Play, Pause, ChevronLeft } from 'lucide-react';
+import { Play, Pause, ChevronLeft } from 'lucide-react';
 
 // Use relative import for the JSON config
 import mediaData from '../data/mediaConfig.json';

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Sparkles, Gift as GiftIcon, ArrowRight } from 'lucide-react';
+import { Heart, Sparkles, ArrowRight } from 'lucide-react';
 
 interface Gift {
   id: number;
