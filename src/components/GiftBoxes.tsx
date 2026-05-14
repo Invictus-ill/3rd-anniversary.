@@ -30,14 +30,28 @@ const GIFTS: Gift[] = [
   }
 ];
 
+// SFX URLs
+const CHEST_OPEN_SFX = 'https://www.soundjay.com/misc/sounds/chest-open-1.mp3';
+const CARD_REVEAL_SFX = 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3';
+const SPARKLE_SFX = 'https://www.soundjay.com/magic/sounds/magic-sparkle-1.mp3';
+
 interface GiftBoxesProps {
   onComplete: () => void;
+  isMuted: boolean;
 }
 
-const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
+const GiftBoxes = ({ onComplete, isMuted }: GiftBoxesProps) => {
   const [chestState, setChestState] = useState<'closed' | 'shaking' | 'open'>('closed');
   const [revealedCount, setRevealedCount] = useState(0);
   const [showTransition, setShowTransition] = useState(true);
+
+  const playSFX = (url: string) => {
+    if (!isMuted) {
+      const audio = new Audio(url);
+      audio.volume = 0.5;
+      audio.play().catch(e => console.error("SFX failed:", e));
+    }
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -56,11 +70,13 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
     }
   }, [showTransition, chestState]);
 
-  // Auto-reveal first gift effect
+  // Auto-reveal first gift effect + sound
   useEffect(() => {
     if (chestState === 'open' && revealedCount === 0) {
       const timer = setTimeout(() => {
         setRevealedCount(1);
+        playSFX(CARD_REVEAL_SFX);
+        setTimeout(() => playSFX(SPARKLE_SFX), 300);
       }, 500);
       return () => clearTimeout(timer);
     }
@@ -71,9 +87,12 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
       setChestState('shaking');
       setTimeout(() => {
         setChestState('open');
+        playSFX(CHEST_OPEN_SFX);
       }, 600);
     } else if (chestState === 'open' && revealedCount < GIFTS.length) {
       setRevealedCount(prev => prev + 1);
+      playSFX(CARD_REVEAL_SFX);
+      setTimeout(() => playSFX(SPARKLE_SFX), 300);
     }
   };
 
@@ -173,7 +192,7 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
                     }}
                     className={`w-full md:w-72 aspect-[3/4] max-w-[280px] bg-white rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(225,29,72,0.4)] border-4 border-white`}
                   >
-                    <div className="h-full flex flex-col">
+                    <div className="h-full flex flex-col text-slate-800">
                       <div className="relative h-1/2 bg-anniversary-pink flex items-center justify-center overflow-hidden">
                         <img 
                           src={gift.image} 
@@ -186,7 +205,7 @@ const GiftBoxes = ({ onComplete }: GiftBoxesProps) => {
                           <p className="text-white font-serif font-black text-xl leading-tight uppercase italic">{gift.title}</p>
                         </div>
                       </div>
-                      <div className="flex-1 p-5 flex flex-col justify-between bg-white text-slate-800">
+                      <div className="flex-1 p-5 flex flex-col justify-between bg-white">
                         <p className="text-base md:text-lg font-serif italic leading-relaxed text-slate-600 text-left">
                           "{gift.description}"
                         </p>
