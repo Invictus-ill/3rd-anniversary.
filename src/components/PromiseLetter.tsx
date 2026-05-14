@@ -8,14 +8,33 @@ interface PromiseLetterProps {
 }
 
 const PromiseLetter = ({ onStartOver, onViewMemories }: PromiseLetterProps) => {
-  const [letterContent, setLetterContent] = useState<string>('');
+  const [fullText, setFullText] = useState<string>('');
+  const [displayedText, setDisplayedText] = useState<string>('');
+  const [isTypingComplete, setIsTypingComplete] = useState(false);
 
   useEffect(() => {
     fetch('/data/letter.txt')
       .then(res => res.text())
-      .then(text => setLetterContent(text))
+      .then(text => setFullText(text))
       .catch(err => console.error("Failed to load letter", err));
   }, []);
+
+  useEffect(() => {
+    if (!fullText) return;
+
+    let currentIndex = 0;
+    const interval = setInterval(() => {
+      if (currentIndex <= fullText.length) {
+        setDisplayedText(fullText.slice(0, currentIndex));
+        currentIndex++;
+      } else {
+        setIsTypingComplete(true);
+        clearInterval(interval);
+      }
+    }, 30); // Adjust speed here (ms per character)
+
+    return () => clearInterval(interval);
+  }, [fullText]);
 
   return (
     <div className="min-h-dvh bg-anniversary-warm flex flex-col items-center p-4 md:p-12 overflow-y-auto relative">
@@ -64,15 +83,26 @@ const PromiseLetter = ({ onStartOver, onViewMemories }: PromiseLetterProps) => {
             A Promise
           </h1>
 
-          <div className="prose prose-pink max-w-none w-full border-t border-b border-anniversary-pink/30 py-10 my-4">
-            {letterContent.split('\n').map((paragraph, idx) => (
+          <div className="prose prose-pink max-w-none w-full border-t border-b border-anniversary-pink/30 py-10 my-4 min-h-[300px]">
+            {displayedText.split('\n').map((paragraph, idx) => (
               <p key={idx} className="text-2xl md:text-3xl text-slate-700 leading-relaxed mb-8 text-center font-serif italic font-medium">
                 {paragraph}
               </p>
             ))}
+            {!isTypingComplete && (
+              <motion.span 
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+                className="inline-block w-3 h-8 bg-anniversary-love ml-1 align-middle"
+              />
+            )}
           </div>
 
-          <div className="mt-12 flex flex-col items-center gap-10 w-full">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isTypingComplete ? 1 : 0 }}
+            className="mt-12 flex flex-col items-center gap-10 w-full"
+          >
             <div className="flex gap-4 items-center">
               <Heart className="w-6 h-6 text-anniversary-rose animate-bounce" />
               <p className="text-3xl font-cursive text-anniversary-love tracking-widest text-center px-4">
@@ -96,7 +126,7 @@ const PromiseLetter = ({ onStartOver, onViewMemories }: PromiseLetterProps) => {
                 Start Over <RotateCcw className="w-6 h-6" />
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
 

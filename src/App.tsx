@@ -21,6 +21,14 @@ function App() {
     music.loop = true;
     music.volume = 0.5;
     
+    // Preload audio files
+    const tracks = ['/media/birds.mp3', '/media/piano.mp3', '/media/5.mp3'];
+    tracks.forEach(track => {
+      const audio = new Audio();
+      audio.src = track;
+      audio.preload = 'auto';
+    });
+
     // Safety cleanup
     return () => {
       music.pause();
