@@ -13,19 +13,19 @@ const GIFTS: Gift[] = [
   {
     id: 1,
     title: "A Shopping Spree",
-    description: "₹3,000 for whatever makes you feel beautiful at Bath & Body Works.",
+    description: "3,000 for your little perfumes and nick nacks",
     image: "/images/gift1.jpg"
   },
   {
     id: 2,
     title: "For Your Elegance",
-    description: "A fancy hand harness, as beautiful and unique as you are.",
+    description: "A beautiful and unique piece for my beautiful and unique girlfriend",
     image: "/images/gift2.jpg"
   },
   {
     id: 3,
     title: "Us Time",
-    description: "A special date with me. No distractions, just us and our love.",
+    description: "A special date with me once you're back (Apologies)",
     image: "/images/gift3.jpeg"
   }
 ];
